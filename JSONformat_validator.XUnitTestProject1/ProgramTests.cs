@@ -27,7 +27,13 @@ namespace JSONformat_validator.XUnitTestProject1
         [Fact]
         public void SpecialCharacters_SimpleWord()
         {
-            Assert.False(Program.CheckSpecialCharacters("Tes\t"));
+            Assert.True(Program.CheckSpecialCharacters("Tes\t"));
+        }
+
+        [Fact]
+        public void SpecialCharacters_UpperCase()
+        {
+            Assert.False(Program.CheckSpecialCharacters("\\Test"));
         }
 
         [Fact]

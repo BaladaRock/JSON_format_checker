@@ -6,7 +6,7 @@ namespace JSONformat_validator
     {
         public static void IsStringValid(string word)
         {
-            if (CheckFirstAndLastCharacters(word))
+            if (CheckFirstAndLastCharacters(word)&&(CheckSpecialCharacters(word)))
                 Console.Write("Valid");
             else
                 Console.Write("Invalid");
@@ -21,29 +21,44 @@ namespace JSONformat_validator
         {
             int lastIndex = word.Length - 1;
             if (word[0] != '\"' || word[lastIndex] != '\"')
-            {
                 return false;
-            }
-            if (!CheckSpecialCharacters(word))
-                return false;
-
+            
             return true;     
             
         }
 
         public static bool CheckSpecialCharacters(string word)
         {
-            for(int i = 1; i < word.Length; i++)
+            for(int i = 1; i < word.Length-1; i++)
             {
+                /*if (word[i] == '\\')
+                {
+                    if (word[i+1] < 32 || word[i+1] == 127)
+                        return true;
+                    else
+                        return false;
+                }*/
                 if (word[i] < 32 || word[i] == 127)
+                {
+                    if (word[i - 1] == '\\')
+                        return true;
+                    else
+                        return false;
+                }
+                    
+                /*    if (word[i] < 32 || word[i] == 127)
                 {
                     if (word[i - 1] != '\\')
                         return false;
+                       
+                }*/
+                if (word[1] == '\\')
+                {
+                   string smallLetter = word.ToLower();
+                   if (smallLetter!=word)
+                       return false;
                 }
-                if (word[i] == '\\' && word[i - 1] != '\\')
-                    return false;
 
-                    
             }
             return true;
         }

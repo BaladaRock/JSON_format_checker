@@ -8,6 +8,7 @@ namespace JSONformat_validator.XUnitTestProject1
         [Fact]
         public void CheckJSOnFormat_SimpleWord()
         {
+
             Assert.True(Program.CheckFirstAndLastCharacters("\"Test\""));
         }
 

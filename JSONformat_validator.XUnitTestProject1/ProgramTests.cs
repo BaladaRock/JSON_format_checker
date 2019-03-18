@@ -31,15 +31,36 @@ namespace JSONformat_validator.XUnitTestProject1
         }
 
         [Fact]
+        public void BackSlashCharacter_SimpleWord()
+        {
+            Assert.False(Program.CheckSpecialCharacters("Tes\\T"));
+        }
+
+        [Fact]
         public void SpecialCharacters_UpperCase()
         {
-            Assert.False(Program.CheckSpecialCharacters("\\Test"));
+            Assert.True(Program.CheckSpecialCharacters("\\Test"));
         }
+
+        [Fact]
+        public void SpecialCharacters_SpecialCase()
+        {
+            Assert.True(Program.CheckSpecialCharacters("Test\\"));
+        }
+
 
         [Fact]
         public void UnicodeCharacters_SimpleExample()
         {
-            Assert.False(Program.CheckUnicodeCharacters("T\u005Cest"));
+            Assert.True(Program.CheckUnicodeCharacters("\"T\\u005Cest\""));
         }
+
+        [Fact]
+        public void CheckHexadecimalFormat_Number()
+        {
+            Assert.True(Program.CheckUnicodeCharacters("80AE"));
+        }
+
+        
     }
 }

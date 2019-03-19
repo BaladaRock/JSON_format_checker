@@ -14,24 +14,26 @@ namespace JSONformat_validator
                  checker= CheckFirstAndLastCharacters(word) && (CheckSpecialCharacters(word));
 
             if (checker)
-                    Console.Write("Valid");
+                    Console.Write("Valid"+"\n");
             else
-                Console.Write("Invalid");
+                Console.Write("Invalid"+"\n");
         }
 
         static void Main(string[] args)
         {
             IsStringValid(Console.ReadLine());
+            if (IsStringJSONNumber(Console.ReadLine()))
+                Console.Write("Valid");
+            else
+                Console.Write("Invalid");
             Console.ReadLine();
         }
 
         public static bool CheckFirstAndLastCharacters(string word)
         {
             int lastIndex = word.Length - 1;
-            if (word[0] != '\"' || word[lastIndex] != '\"')
-                return false;
-            
-            return true;     
+            return !(word[0] != '\"' || word[lastIndex] != '\"');
+              
             
         }
 
@@ -43,7 +45,7 @@ namespace JSONformat_validator
                 if (word[i] == '\\')
                 {
                     
-                    if (!CheckBackSlashCharacters(word[i + 1]))
+                    if (!CheckEscapeCharacters(word[i + 1]))
                         return false;
                     else
                         i++;
@@ -66,7 +68,7 @@ namespace JSONformat_validator
             return true;
         }
 
-        public static bool CheckBackSlashCharacters(char character)
+        public static bool CheckEscapeCharacters(char character)
         {
             string backslashCharacters = "\"\\/bfnrt";
             foreach(var symbol in backslashCharacters)
@@ -90,12 +92,9 @@ namespace JSONformat_validator
                     string checkValue = word.Substring(index + 2, 4);
                     if (word[index - 1] == '\\')
                         return word;
-                    else
-                    {
-                        if (CheckUnicodeCharacters(checkValue))
-                            result=FormatWord(index, index + 5, word);    
-                    }
-                       
+                    else if (CheckUnicodeCharacters(checkValue))
+                         result=FormatWord(index, index + 5, word);    
+                      
                 }
 
             }
@@ -129,7 +128,61 @@ namespace JSONformat_validator
             return newWord;
         }
         
+        public static bool IsStringJSONNumber(string word)
+        {
+            if (word == string.Empty)
+                return false;
+            return CheckDigitsForJSONNumber(word);
+            
+        }
 
+        static bool CheckDigitsForJSONNumber(string word)
+        {
+            if (word[0] == '0' && word.Length > 1)
+            {
+                
+                return CheckDecimalPart(word.Substring(0, word.Length ));
+                
+            }
+               
+            for (int i = 0; i < word.Length; i++)
+            {
+                if (word[0] == '-'||word[0]=='+')
+                {
+                    if (word[1] == '0')
+                        return false;
+                    continue;
+                }
+                if (word[i] == '.')
+                {
+                    int index = i;
+                    return CheckDecimalPart(word.Substring(index, (word.Length  - index)));
+                    
+                }
+                    
+                if (word[i] >= '9' || word[i] < '0')
+                    return false;
+            }
+            return true;
+        }
+
+        static bool CheckDecimalPart(string decimalPart)
+        {
+
+            int search = decimalPart.IndexOf(".");
+            if (decimalPart.Length == 1||search==-1)
+                return false;
+            for(int i = 0; i < decimalPart.Length; i++)
+            {
+                if (decimalPart[i] == 'E'||decimalPart[i]=='e')
+                {
+                    int length = decimalPart.Length-1;
+                    return CheckDigitsForJSONNumber(decimalPart.Substring(i + 1, length - i));
+                }
+                    
+            }
+            return true;
+        }
 
     }
 }

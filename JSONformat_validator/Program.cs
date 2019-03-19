@@ -130,20 +130,16 @@ namespace JSONformat_validator
         
         public static bool IsStringJSONNumber(string word)
         {
-            if (word == string.Empty)
-                return false;
-            return CheckDigitsForJSONNumber(word);
+            
+            return (word!=string.Empty&&CheckDigitsForJSONNumber(word));
             
         }
 
         static bool CheckDigitsForJSONNumber(string word)
         {
             if (word[0] == '0' && word.Length > 1)
-            {
-                
                 return CheckDecimalPart(word.Substring(0, word.Length ));
-                
-            }
+              
                
             for (int i = 0; i < word.Length; i++)
             {
@@ -170,7 +166,10 @@ namespace JSONformat_validator
         {
 
             int search = decimalPart.IndexOf(".");
+            int lastSearch = decimalPart.LastIndexOf(".");
             if (decimalPart.Length == 1||search==-1)
+                return false;
+            if (search!=lastSearch)
                 return false;
             for(int i = 0; i < decimalPart.Length; i++)
             {
